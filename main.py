@@ -71,11 +71,13 @@ def main():
         if not doc_path.exists():
             print(f"[错误] 文档目录不存在: {doc_dir}")
             return
-        doc_files = list(doc_path.glob("*.txt"))
+        # 支持所有子目录下的pdf和txt文件
+        supported_exts = (".pdf", ".txt")
+        doc_files = [str(f) for f in doc_path.glob("**/*") if f.is_file() and f.suffix.lower() in supported_exts]
         if not doc_files:
-            print(f"[错误] 文档目录中未找到任何txt文件: {doc_dir}")
+            print(f"[错误] 文档目录及其子目录中未找到任何pdf或txt文件: {doc_dir}")
             return
-        print(f"[信息] 检测到 {len(doc_files)} 个txt文档，开始加载...")
+        print(f"[信息] 检测到 {len(doc_files)} 个pdf/txt文档，开始加载...")
         load_documents(rag_assistant)
         print("[信息] 文档加载完毕，准备进行RAG分析。")
         
