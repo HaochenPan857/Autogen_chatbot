@@ -11,6 +11,13 @@ from src.utils.vector_store import VectorStore
 from src.utils.document_loader import DocumentLoader
 from src.config import config
 
+# Import Google Gemini API if available
+try:
+    import google.generativeai as genai
+    GEMINI_AVAILABLE = True
+except ImportError:
+    GEMINI_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 class RAGAssistant:
@@ -25,11 +32,33 @@ class RAGAssistant:
         self.user_req_file_paths = []
         self.vectorized = False
         
+        # Set up the appropriate LLM based on provider
+        if config.llm.provider == "google" and GEMINI_AVAILABLE:
+            # Configure Gemini
+            if config.llm.google_api_key:
+                genai.configure(api_key=config.llm.google_api_key)
+                logger.info(f"Configured Google Gemini with model: {config.llm.model}")
+                self.gemini_model = genai.GenerativeModel(config.llm.model)
+            else:
+                logger.error("Google API key not found. Please set GOOGLE_API_KEY in your environment variables.")
+                # Fall back to OpenAI
+                # config.llm.provider = "openai"
+                # logger.info("Falling back to OpenAI provider.")
+            
         # Create the assistant agent with RAG capabilities
+        # Always use OpenAI config for the agent since it's using the OpenAI API
+        openai_config = {
+            "config_list": [{
+                "model": "gpt-3.5-turbo",  # Default to a reliable OpenAI model
+                "api_key": config.llm.openai_api_key,
+            }],
+            "temperature": config.llm.temperature
+        }
+        
         self.agent = autogen.AssistantAgent(
             name="rag_assistant",
             system_message="""You are an expert assistant for sustainability report analysis. You will always answer ONLY based on the provided extracted text context below. Do not mention PDF files, and do not ask for more data. If the context contains relevant information, answer as fully as possible using and quoting the context. If not, say that the context does not contain enough information.""",
-            llm_config=config.llm_config
+            llm_config=openai_config
         )
     
     def load_documents(self, file_paths: List[str], vectorize: bool = True) -> None:
@@ -73,8 +102,7 @@ class RAGAssistant:
         try:
             # Get chunks from vector store
             chunks = self.vector_store.get_relevant_chunks(query, k)
-            print("================query=================",query)
-            print("================relevant 500 chunks=================",chunks)
+
             
             # If we have user requirement files and we're using vectorization
             if self.vectorized and self.user_req_file_paths:
@@ -100,7 +128,6 @@ class RAGAssistant:
                 
                 # Limit user requirement texts to avoid token limits
                 user_req_texts = user_req_texts[:500]  
-                print("================user_req_texts=================",user_req_texts)
                 
                 # Prepend user requirement texts to ensure they're included in the context
                 if user_req_texts:
@@ -151,7 +178,7 @@ Your goal is to extract as much relevant information as possible from the provid
             if self.vectorized:
                 # Get relevant context using vector search
                 context = self.get_relevant_context(query, k=500)  # 增加检索数量到500个chunk
-                print("\n========= 检索到的 context 预览 =========\n", context, "\n====================================\n")
+
             else:
                 # If not vectorized, use all document texts as context
                 context = "\n\nRelevant Context:\n" + "\n---\n".join(self.texts[:15])
@@ -160,10 +187,25 @@ Your goal is to extract as much relevant information as possible from the provid
             # Enhance the prompt with context
             enhanced_prompt = self.enhance_prompt(query, context)
             
-            # Send the enhanced prompt to the LLM using generate_reply
-            response = self.agent.generate_reply([
-                {"role": "user", "content": enhanced_prompt}
-            ])
+            # Use the appropriate model based on provider
+            if config.llm.provider == "google" and GEMINI_AVAILABLE and hasattr(self, 'gemini_model'):
+                try:
+                    # Use Google Gemini API directly
+                    logger.info("Using Google Gemini for response generation")
+                    response = self.gemini_model.generate_content(enhanced_prompt).text
+                except Exception as gemini_error:
+                    logger.error(f"Error with Gemini API: {str(gemini_error)}")
+                    # Fallback to OpenAI with a compatible model
+                    logger.info("Falling back to OpenAI with gpt-3.5-turbo model")
+                    # Use the OpenAI agent that's already configured correctly
+                    response = self.agent.generate_reply([
+                        {"role": "user", "content": enhanced_prompt}
+                    ])
+            else:
+                # Send the enhanced prompt to the LLM using generate_reply
+                response = self.agent.generate_reply([
+                    {"role": "user", "content": enhanced_prompt}
+                ])
             
             return {
                 'response': response,

@@ -148,11 +148,10 @@ def ask():
         # 处理查询
         result = rag_assistant.process_query(query)
         
-        # 获取GPT回答
+        # 获取LLM回答
         if result.get('enhanced_prompt'):
-            answer = rag_assistant.agent.generate_reply([
-                {"role": "user", "content": result["enhanced_prompt"]}
-            ])
+            # Use the response that was already generated in process_query
+            answer = result.get('response')
             
             return jsonify({
                 'success': True,
