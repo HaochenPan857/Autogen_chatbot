@@ -1,32 +1,47 @@
 import os
 import sys
 import uuid
+import logging
+import json
 from pathlib import Path
+from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
 from werkzeug.utils import secure_filename
-from flask import Flask, render_template, request, jsonify
+from src.agents.router_agent import RouterAgent
+from src.config import config
 
 # 添加项目根目录到系统路径
 project_root = Path(__file__).parent.absolute()
 sys.path.append(str(project_root))
 
-# 导入RAG助手
-from src.agents.rag_assistant import RAGAssistant
-
 app = Flask(__name__)
+CORS(app)
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key'
 
-# 初始化RAG助手
-rag_assistant = None
+# 初始化路由代理，用于分发查询到适当的代理
+router_agent = None
 
 @app.route('/')
 def index():
     """渲染主页"""
     return render_template('index.html')
 
+@app.route('/score')
+def score_page():
+    """Render the scoring page"""
+    return render_template('score.html')
+
 @app.route('/upload_documents', methods=['POST'])
 def upload_documents():
     """处理用户上传的文档作为需求和问题规格"""
-    global rag_assistant
+    global router_agent
     
     try:
         # 检查是否有文件上传
@@ -66,8 +81,8 @@ def upload_documents():
                 'message': 'No valid PDF or TXT files were uploaded.'
             })
         
-        # 初始化RAG助手
-        rag_assistant = RAGAssistant()
+        # 初始化路由代理
+        router_agent = RouterAgent()
         
         # 加载系统中已有的文档
         reference_dir = os.path.join(project_root, 'data', 'documents', 'reference')
@@ -79,16 +94,18 @@ def upload_documents():
             if os.path.exists(directory):
                 for root, _, files in os.walk(directory):
                     for file in files:
-                        if file.lower().endswith(('.pdf', '.txt')):
+                        if file.lower().endswith(('.pdf', '.txt', '.json')):
                             system_paths.append(os.path.join(root, file))
-        
-        # 将用户需求文档和系统文档结合起来
-        # 添加特定的系统参考文档
-        specific_ref_doc = os.path.join(project_root, 'data', 'documents', 'reference', 'effects-analysis.pdf')
-        system_paths = [specific_ref_doc] if os.path.exists(specific_ref_doc) else []
         
         # 结合用户上传的文档和系统参考文档
         all_paths = system_paths + user_req_paths
+        
+        # Log what documents we're processing
+        logger.info(f"Processing {len(user_req_paths)} user uploaded documents and {len(system_paths)} reference documents")
+        for path in user_req_paths:
+            logger.info(f"User document: {os.path.basename(path)}")
+        for path in system_paths:
+            logger.info(f"Reference document: {os.path.basename(path)}")
         
         if not all_paths:
             return jsonify({
@@ -99,11 +116,12 @@ def upload_documents():
         # 决定是否需要向量化文档 (超过3个文件或总大小>1MB)
         should_vectorize = len(all_paths) > 3 or sum(os.path.getsize(path) for path in all_paths if os.path.exists(path)) > 1000000
         
-        # 设置用户需求文档标记，以便在检索时给予更高权重
-        rag_assistant.set_user_requirement_files(user_req_paths)
+        # 设置用户需求文档标记
+        router_agent.set_user_requirement_files(user_req_paths)
         
         # 加载文档，根据需要决定是否向量化
-        rag_assistant.load_documents(all_paths, vectorize=should_vectorize)
+        # 传递用户文件和所有文件分开，这样scoring_agent只会使用用户上传的文件
+        router_agent.load_documents(all_paths, vectorize=should_vectorize, user_files=user_req_paths)
         
         vectorization_msg = "Documents have been vectorized for efficient retrieval." if should_vectorize else \
                            "Documents are being processed directly by the language model without vectorization."
@@ -117,6 +135,7 @@ def upload_documents():
         })
     
     except Exception as e:
+        logger.error(f"Error processing documents: {str(e)}")
         return jsonify({
             'success': False,
             'message': f'Error processing documents: {str(e)}'
@@ -124,19 +143,20 @@ def upload_documents():
 
 @app.route('/ask', methods=['POST'])
 def ask():
-    """处理用户问题"""
-    global rag_assistant
+    """处理用户问题并根据模式参数路由到适当的代理"""
+    global router_agent
     
-    # 检查RAG助手是否已初始化
-    if rag_assistant is None:
+    # 检查路由代理是否已初始化
+    if router_agent is None:
         return jsonify({
             'success': False,
-            'message': 'RAG assistant not initialized. Please load documents first.'
+            'message': 'Router agent not initialized. Please load documents first.'
         })
     
-    # 获取用户问题
+    # 获取用户问题和模式
     data = request.get_json()
     query = data.get('query', '')
+    mode = data.get('mode', 'analysis')  # Default to analysis mode
     
     if not query:
         return jsonify({
@@ -145,31 +165,37 @@ def ask():
         })
     
     try:
-        # 处理查询
-        result = rag_assistant.process_query(query)
+        # 根据模式决定如何处理查询
+        logger.info(f"Processing query in {mode} mode: {query}")
         
-        # 获取LLM回答
-        if result.get('enhanced_prompt'):
-            # Use the response that was already generated in process_query
-            answer = result.get('response')
-            
+        # 路由查询到适当的代理，传递模式参数
+        result = router_agent.route_query(query, mode=mode)
+        
+        # 根据使用的代理类型返回响应
+        if result.get('agent') == 'scoring_agent':
             return jsonify({
                 'success': True,
                 'query': query,
-                'context': result.get('context', ''),
-                'answer': answer
+                'agent_type': 'scoring_agent',
+                'answer': result.get('response', '')
             })
-        else:
+        else:  # rag_assistant
             return jsonify({
-                'success': False,
-                'message': 'Failed to generate enhanced prompt.'
+                'success': True,
+                'query': query,
+                'agent_type': 'rag_assistant',
+                'context': result.get('context', ''),
+                'answer': result.get('response', '')
             })
     
     except Exception as e:
+        logger.error(f"Error processing query: {str(e)}")
         return jsonify({
             'success': False,
             'message': f'Error processing query: {str(e)}'
         })
+
+
 
 if __name__ == '__main__':
     # 创建templates目录（如果不存在）
@@ -179,6 +205,10 @@ if __name__ == '__main__':
     # 创建static目录（如果不存在）
     static_dir = os.path.join(project_root, 'static')
     os.makedirs(static_dir, exist_ok=True)
+    
+    # 创建data/scoring目录（如果不存在）
+    scoring_dir = os.path.join(project_root, 'data', 'scoring')
+    os.makedirs(scoring_dir, exist_ok=True)
     
     print("Starting RAG Web Application...")
     app.run(debug=True, port=5000)

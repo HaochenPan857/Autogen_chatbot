@@ -1,0 +1,52 @@
+{
+"Test reference": [
+{
+"term": "IFRS S1",
+"definition": "IFRS S1 (General Requirements for Disclosure of Sustainability-related Financial Information) – an IFRS Sustainability Disclosure Standard that specifies the requirements for companies to disclose sustainability-related financial information (general sustainability disclosures) in their financial reports."
+},
+{
+"term": "IFRS S2",
+"definition": "IFRS S2 (Climate-related Disclosures) – an IFRS Sustainability Disclosure Standard that specifies the requirements for companies to disclose climate-related financial information, incorporating the recommendations of the TCFD for climate risk reporting."
+},
+{
+"term": "ISSB",
+"definition": "ISSB (International Sustainability Standards Board) – the board established by the IFRS Foundation to develop a comprehensive global baseline of high-quality sustainability disclosure standards (the IFRS Sustainability Disclosure Standards, such as IFRS S1 and S2) for financial markets."
+},
+{
+"term": "TCFD",
+"definition": "TCFD (Task Force on Climate-related Financial Disclosures) – an initiative created by the Financial Stability Board that developed a widely adopted framework for voluntary climate-related financial disclosure (covering governance, strategy, risk management, and metrics & targets); IFRS S2 is aligned with the TCFD's recommendations."
+},
+{
+"term": "ESRS",
+"definition": "ESRS (European Sustainability Reporting Standards) – a set of comprehensive sustainability reporting standards developed in the European Union and being implemented as mandatory disclosure requirements for large companies under EU law."
+},
+{
+"term": "GRI",
+"definition": "GRI (Global Reporting Initiative) – an independent organization that issues one of the most widely used frameworks for sustainability reporting (the GRI Standards), helping organizations report their environmental, social, and governance impacts."
+},
+{
+"term": "SASB Standards",
+"definition": "SASB Standards – industry-specific sustainability disclosure standards that identify the subset of ESG issues most relevant to financial performance in 77 different industries, originally developed by the Sustainability Accounting Standards Board (SASB) and now maintained by the ISSB under the IFRS Foundation."
+},
+{
+"term": "CDSB",
+"definition": "CDSB (Climate Disclosure Standards Board) – an international consortium of NGOs and businesses that developed a framework for companies to report environmental and climate-related information to investors; its guidance has been incorporated into the ISSB's standard-setting process."
+},
+{
+"term": "GHG emissions",
+"definition": "GHG emissions – greenhouse gas emissions. These are typically categorized into Scope 1, Scope 2, and Scope 3 emissions: Scope 1 covers direct emissions from sources owned or controlled by the company; Scope 2 covers indirect emissions from purchased energy; Scope 3 covers all other indirect emissions occurring in the company's value chain."
+},
+{
+"term": "GHG Protocol Corporate Standard",
+"definition": "GHG Protocol Corporate Standard – the Greenhouse Gas Protocol Corporate Accounting and Reporting Standard, which provides the leading global framework for companies to measure and report their greenhouse gas emissions (covering seven major GHGs defined by the Kyoto Protocol and guidance on Scope 1, 2, and 3 emissions accounting)."
+},
+{
+"term": "ESG",
+"definition": "ESG – stands for Environmental, Social, and Governance. It refers to the three key categories of factors used to evaluate a company's sustainability performance and ethical impact."
+},
+{
+"term": "Prospects",
+"definition": "Prospects (in sustainability disclosures) – in the context of IFRS S1, a company's "prospects" refers to its future cash flows, access to finance, or cost of capital over the short, medium, or long term, as could be affected by sustainability-related risks and opportunities."
+}
+]
+}

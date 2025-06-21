@@ -27,11 +27,25 @@
             <div id="status" class="status"></div>
         </div>
 
+        <div class="mode-selector">
+            <div class="btn-group w-100 mb-3" role="group" aria-label="Mode selection">
+                <button type="button" class="btn btn-primary active" id="analysis-mode-btn">Analysis Mode</button>
+                <button type="button" class="btn btn-secondary" id="scoring-mode-btn">Scoring Mode</button>
+                <button type="button" class="btn btn-secondary" id="explore-mode-btn">Explore Mode</button>
+            </div>
+            <div id="mode-description" class="mb-3">
+                <p><strong>Current Mode:</strong> <span id="current-mode">Analysis</span></p>
+                <p id="analysis-description">Analysis mode helps you understand the content of sustainability reports using metrics and frameworks.</p>
+                <p id="scoring-description" style="display:none;">Scoring mode evaluates sustainability reports against detailed criteria and provides ratings.</p>
+                <p id="explore-description" style="display:none;">Explore mode analyzes only your uploaded documents without using reference materials.</p>
+            </div>
+        </div>
+
         <div class="chat-container">
             <div id="chat-messages" class="chat-messages">
                 <div class="message system">
                     <div class="message-content">
-                        <p>Welcome to RAG Assistant! Click "Upload Documents" to start, then ask questions about your documents.</p>
+                        <p>Welcome to Sustainability Report Assistant! Click "Upload Documents" to start, then ask questions or request scoring of your documents.</p>
                     </div>
                 </div>
             </div>

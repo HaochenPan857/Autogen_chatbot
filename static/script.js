@@ -10,9 +10,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const toggleContextBtn = document.getElementById('toggle-context');
     const loadingOverlay = document.getElementById('loading-overlay');
     const loadingText = document.getElementById('loading-text');
+    const analysisModeBtn = document.getElementById('analysis-mode-btn');
+    const scoringModeBtn = document.getElementById('scoring-mode-btn');
+    const exploreModeBtn = document.getElementById('explore-mode-btn');
+    const currentModeSpan = document.getElementById('current-mode');
+    const analysisDescription = document.getElementById('analysis-description');
+    const scoringDescription = document.getElementById('scoring-description');
+    const exploreDescription = document.getElementById('explore-description');
 
     // 标记文档是否已加载
     let documentsLoaded = false;
+    
+    // 当前模式: 'analysis' 或 'scoring'
+    let currentMode = 'analysis';
     
     // 配置marked库以正确渲染markdown
     marked.setOptions({
@@ -96,11 +106,92 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Mode switching handlers
+    analysisModeBtn.addEventListener('click', function() {
+        if (currentMode !== 'analysis') {
+            // Update mode
+            currentMode = 'analysis';
+            currentModeSpan.textContent = 'Analysis';
+            
+            // Update button styles
+            analysisModeBtn.classList.add('active', 'btn-primary');
+            analysisModeBtn.classList.remove('btn-secondary');
+            scoringModeBtn.classList.remove('active', 'btn-primary');
+            scoringModeBtn.classList.add('btn-secondary');
+            exploreModeBtn.classList.remove('active', 'btn-primary');
+            exploreModeBtn.classList.add('btn-secondary');
+            
+            // Update descriptions
+            analysisDescription.style.display = 'block';
+            scoringDescription.style.display = 'none';
+            exploreDescription.style.display = 'none';
+            
+            // Update placeholder
+            userInput.placeholder = 'Ask a question about your documents...';
+        }
+    });
+    
+    scoringModeBtn.addEventListener('click', function() {
+        if (currentMode !== 'scoring') {
+            // Update mode
+            currentMode = 'scoring';
+            currentModeSpan.textContent = 'Scoring';
+            
+            // Update button styles
+            scoringModeBtn.classList.add('active', 'btn-primary');
+            scoringModeBtn.classList.remove('btn-secondary');
+            analysisModeBtn.classList.remove('active', 'btn-primary');
+            analysisModeBtn.classList.add('btn-secondary');
+            exploreModeBtn.classList.remove('active', 'btn-primary');
+            exploreModeBtn.classList.add('btn-secondary');
+            
+            // Update descriptions
+            scoringDescription.style.display = 'block';
+            analysisDescription.style.display = 'none';
+            exploreDescription.style.display = 'none';
+            
+            // Update placeholder
+            userInput.placeholder = 'Ask to score or rate your sustainability report...';
+        }
+    });
+    
+    exploreModeBtn.addEventListener('click', function() {
+        if (currentMode !== 'explore') {
+            // Update mode
+            currentMode = 'explore';
+            currentModeSpan.textContent = 'Explore';
+            
+            // Update button styles
+            exploreModeBtn.classList.add('active', 'btn-primary');
+            exploreModeBtn.classList.remove('btn-secondary');
+            analysisModeBtn.classList.remove('active', 'btn-primary');
+            analysisModeBtn.classList.add('btn-secondary');
+            scoringModeBtn.classList.remove('active', 'btn-primary');
+            scoringModeBtn.classList.add('btn-secondary');
+            
+            // Update descriptions
+            exploreDescription.style.display = 'block';
+            analysisDescription.style.display = 'none';
+            scoringDescription.style.display = 'none';
+            
+            // Update placeholder
+            userInput.placeholder = 'Ask a question about your uploaded documents only...';
+        }
+    });
+
     // 发送问题
     function sendQuestion() {
         const query = userInput.value.trim();
         
         if (!query) return;
+        
+        // Prepare the actual query based on the current mode
+        let processedQuery = query;
+        if (currentMode === 'scoring' && !query.toLowerCase().includes('score') && 
+            !query.toLowerCase().includes('rate') && !query.toLowerCase().includes('evaluate')) {
+            // If in scoring mode but query doesn't contain scoring keywords, add them
+            processedQuery = `Score and rate this sustainability report: ${query}`;
+        }
         
         // 添加用户消息
         addMessage('user', query);
@@ -117,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ query: query })
+            body: JSON.stringify({ query: processedQuery, mode: currentMode })
         })
         .then(response => response.json())
         .then(data => {
@@ -128,7 +219,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 addMessage('assistant', data.answer);
                 
                 // 更新上下文面板
-                updateContextPanel(data.context);
+                if (data.context) {
+                    updateContextPanel(data.context);
+                } else {
+                    updateContextPanel('');
+                }
             } else {
                 addMessage('system', `Error: ${data.message}`);
             }

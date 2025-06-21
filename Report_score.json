@@ -1,0 +1,130 @@
+{
+  "Framework Adherence": {
+    "dimensions": [
+      {
+        "dimension": "Framework Relevance (Conditional)",
+        "description": "Determine which sustainability frameworks the report claims to follow, and only apply scoring for framework-specific criteria (e.g., GRI, SASB) if the report explicitly declares adherence to those frameworks."
+      },
+      {
+        "dimension": "Declared Frameworks Used",
+        "description": "Check if the report clearly states the frameworks or standards it is prepared in accordance with (e.g., GRI Standards, TCFD recommendations, SASB Standards, ISSB/IFRS) and provides context for their use."
+      },
+      {
+        "dimension": "TCFD Climate Disclosure Alignment",
+        "description": "Evaluate whether climate-related disclosures align with TCFD’s four pillars – Governance, Strategy, Risk Management, Metrics & Targets – indicating the report addresses climate risks and opportunities comprehensively:contentReference[oaicite:0]{index=0}:contentReference[oaicite:1]{index=1}."
+      },
+      {
+        "dimension": "GRI Standards Compliance (if applicable)",
+        "description": "If the report claims GRI compliance, verify inclusion of a GRI content index and disclosure of all required topics. The presence of a complete GRI content index (with any omissions explained) signifies full adherence:contentReference[oaicite:2]{index=2}."
+      },
+      {
+        "dimension": "SASB Metrics Reporting (if applicable)",
+        "description": "If SASB (industry-specific) standards are referenced, check that the report provides the relevant industry metrics and performance data. Alignment with SASB ensures decision-useful, industry-tailored disclosures:contentReference[oaicite:3]{index=3} (consider SASB guidance per IFRS S1)."
+      },
+      {
+        "dimension": "ISSB IFRS S1/S2 Integration (if applicable)",
+        "description": "If the company adopts ISSB’s IFRS Sustainability Disclosure Standards (IFRS S1 for general requirements and IFRS S2 for climate), assess whether it covers the required disclosures (e.g., material sustainability risks, climate scenario analysis, cross-industry and industry-specific metrics):contentReference[oaicite:4]{index=4}:contentReference[oaicite:5]{index=5}."
+      },
+      {
+        "dimension": "Integrated Reporting Framework (if applicable)",
+        "description": "If following the <IR> Integrated Reporting framework, check that financial and sustainability information are cohesively presented. There should be connectivity between non-financial and financial data to give a holistic view of value creation:contentReference[oaicite:6]{index=6}."
+      },
+      {
+        "dimension": "SDG and Initiative Alignment",
+        "description": "Determine if the report maps its content to global initiatives like the UN Sustainable Development Goals or UN Global Compact. Explicit links to SDGs (e.g., contributions to specific Goals) demonstrate how the company’s actions support global sustainability targets:contentReference[oaicite:7]{index=7}."
+      },
+      {
+        "dimension": "Materiality Assessment Disclosure",
+        "description": "Check for a described materiality or ESG issue prioritization process, as required by many frameworks. The report should identify key sustainability topics material to the business and stakeholders, aligning with GRI/ISSB guidance on focusing on significant impacts or risks."
+      },
+      {
+        "dimension": "Reporting Scope and Boundary",
+        "description": "Verify that the report clearly defines its reporting scope and boundaries (which entities, business units, and value-chain aspects are covered). Adherence to frameworks entails transparency about what is included or excluded from the sustainability data."
+      }
+    ]
+  },
+  "Board Completeness": {
+    "dimensions": [
+      {
+        "dimension": "Board ESG Oversight Structure",
+        "description": "Assess whether a formal structure exists for board-level oversight of sustainability (e.g., a dedicated sustainability committee or explicit ESG responsibilities for the board). Presence of board committees focused on sustainability/climate indicates robust governance:contentReference[oaicite:8]{index=8}."
+      },
+      {
+        "dimension": "Strategic ESG Integration by Board",
+        "description": "Evaluate if the board incorporates sustainability into strategic decisions. For example, does the board consider ESG factors when reviewing corporate strategy, major plans, budgets, and capital investments:contentReference[oaicite:9]{index=9}? Comprehensive oversight means ESG is embedded in long-term planning."
+      },
+      {
+        "dimension": "Board Oversight of Risk and Compliance",
+        "description": "Check if the board oversees sustainability-related risks (climate, ESG risks) as part of enterprise risk management. The board should be informed about ESG risks regularly and integrate them into overall risk oversight processes:contentReference[oaicite:10]{index=10}."
+      },
+      {
+        "dimension": "ESG Targets and Performance Monitoring",
+        "description": "Determine if the board monitors progress on sustainability goals and targets. Strong governance includes the board reviewing ESG performance metrics (e.g., emissions reductions, diversity goals) and ensuring the company stays on track to meet its commitments:contentReference[oaicite:11]{index=11}."
+      },
+      {
+        "dimension": "Board Expertise and ESG Competency",
+        "description": "Check for evidence that the board has sustainability expertise or training. This could be board members with ESG experience or regular education on ESG issues, ensuring the board can effectively oversee complex sustainability topics."
+      },
+      {
+        "dimension": "Management’s Role & Reporting to Board",
+        "description": "Verify that management-level roles for sustainability are defined (e.g., a Chief Sustainability Officer or management committee) and that these report to the board on ESG matters:contentReference[oaicite:12]{index=12}. Clear delegation and upward reporting indicate complete governance from board to management."
+      },
+      {
+        "dimension": "ESG in Executive Remuneration",
+        "description": "Check if sustainability performance is tied to executive or board remuneration. For instance, the board setting ESG KPIs that influence management bonuses or pay demonstrates accountability from the top:contentReference[oaicite:13]{index=13}."
+      },
+      {
+        "dimension": "Board Meeting Frequency on ESG",
+        "description": "Assess how often the board or its committees discuss sustainability issues. Regular schedule (e.g., quarterly ESG reviews) or integration into routine board meetings shows the board gives ongoing attention to sustainability matters:contentReference[oaicite:14]{index=14}."
+      },
+      {
+        "dimension": "Board Accountability and Approval",
+        "description": "Determine if the board explicitly approves the sustainability report or provides a formal statement of responsibility for ESG disclosures. Such approval or sign-off indicates the board takes ownership of sustainability reporting and performance."
+      },
+      {
+        "dimension": "Breadth of Board Oversight",
+        "description": "Ensure the board’s oversight spans all relevant sustainability domains (environmental, social, and governance topics). A complete board approach covers climate and environmental issues, as well as social responsibility and governance ethics, rather than focusing narrowly on a single issue."
+      }
+    ]
+  },
+  "Tone from the Top": {
+    "dimensions": [
+      {
+        "dimension": "Executive Leadership Commitment",
+        "description": "Evaluate the visible commitment of top executives (CEO, Board Chair) to sustainability. For example, the CEO’s letter or public statements should explicitly endorse ESG goals and acknowledge challenges, signaling serious commitment from the top:contentReference[oaicite:15]{index=15}."
+      },
+      {
+        "dimension": "Sustainability Vision and Strategy",
+        "description": "Check if leadership articulates a clear sustainability vision and integrates it into the company’s strategy. A strong tone from the top includes leaders outlining long-term ESG objectives and how these align with business goals:contentReference[oaicite:16]{index=16}."
+      },
+      {
+        "dimension": "Culture and Values from Leadership",
+        "description": "Assess whether leaders are embedding sustainability into the corporate culture. This could be through core values, internal messaging, or initiatives led by leadership that promote ESG as part of the company identity (e.g., the CEO driving a culture of sustainability):contentReference[oaicite:17]{index=17}."
+      },
+      {
+        "dimension": "Top-Level Accountability",
+        "description": "Determine if a top executive is directly accountable for sustainability outcomes (e.g., CEO or a C-suite executive owns the ESG agenda). Tone from the top is stronger when someone at the highest level is clearly responsible for driving sustainability performance."
+      },
+      {
+        "dimension": "Ethical Leadership and Governance",
+        "description": "Check that the leadership sets an ethical tone by aligning sustainability with corporate governance (e.g., a code of conduct emphasizing ESG values, anti-corruption and social responsibility). Leadership commitment to ethical practices reinforces the tone from the top:contentReference[oaicite:18]{index=18}."
+      },
+      {
+        "dimension": "Resource Allocation Support",
+        "description": "Examine if leadership backs up rhetoric with resources – allocating budget, personnel, or technological investment to sustainability initiatives. A true commitment from the top is reflected by tangible support, as leaders who prioritize sustainability will invest in it:contentReference[oaicite:19]{index=19}."
+      },
+      {
+        "dimension": "Stakeholder Engagement by Leaders",
+        "description": "Assess whether top leaders actively engage stakeholders on sustainability issues. This could include dialogues with investors or employees about ESG, leaders responding to stakeholder ESG concerns, or participation in public sustainability forums, indicating openness and advocacy."
+      },
+      {
+        "dimension": "Ambition and Long-Term Targets",
+        "description": "Evaluate if leadership has set ambitious long-term sustainability targets (e.g., carbon neutrality by a certain year, diversity goals) and publicly committed to them. Bold targets announced by executives (such as a net-zero pledge) show that the tone from the top drives high aspirations."
+      },
+      {
+        "dimension": "External Leadership & Collaboration",
+        "description": "Check for evidence of leaders championing sustainability beyond the company – for instance, CEO involvement in industry sustainability coalitions, or public endorsements of global initiatives. A strong tone from the top often involves influencing others in the business community towards sustainability."
+      }
+    ]
+  }
+}

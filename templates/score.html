@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sustainability Report Scoring</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .container {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #result {
+            margin-top: 20px;
+            white-space: pre-wrap;
+            background-color: #f5f5f5;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .loading {
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sustainability Report Scoring</h1>
+    
+    <div class="container">
+        <form id="scoreForm">
+            <div class="form-group">
+                <label for="reportFile">Upload Sustainability Report (PDF or TXT):</label>
+                <input type="file" id="reportFile" name="files" accept=".pdf,.txt" required>
+            </div>
+            
+            <button type="submit">Score Report</button>
+        </form>
+        
+        <div class="loading" id="loading">
+            <p>Scoring in progress... This may take a few minutes.</p>
+        </div>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('scoreForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('reportFile');
+            const resultDiv = document.getElementById('result');
+            const loadingDiv = document.getElementById('loading');
+            
+            if (!fileInput.files.length) {
+                alert('Please select a file to score');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('files', fileInput.files[0]);
+            
+            resultDiv.style.display = 'none';
+            loadingDiv.style.display = 'block';
+            
+            try {
+                const response = await fetch('/score_document', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    let resultText = `File: ${data.files[0]}\n\n`;
+                    
+                    if (data.results && data.results.length > 0) {
+                        const result = data.results[0];
+                        resultText += result.scoring_result;
+                    } else {
+                        resultText += 'No scoring results available.';
+                    }
+                    
+                    resultDiv.textContent = resultText;
+                } else {
+                    resultDiv.textContent = `Error: ${data.message}`;
+                }
+            } catch (error) {
+                resultDiv.textContent = `Error: ${error.message}`;
+            } finally {
+                loadingDiv.style.display = 'none';
+                resultDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
